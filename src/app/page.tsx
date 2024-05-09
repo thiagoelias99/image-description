@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { GoogleGenerativeAIError, GoogleGenerativeAIResponseError } from '@google/generative-ai';
 import { ImageUp, Loader2, TriangleAlert } from 'lucide-react';
 import Image from 'next/image';
 import { FormEvent, useState } from 'react';
@@ -51,17 +52,24 @@ export default function Home() {
 
     const imageParts = await fileToGenerativePart(arquivo as Blob)
 
-    try {
-      processImage(imageParts)
-        .then((json) => {
-          console.log(json)
-          setProcessedAlt(json);
-          setProcessing(false)
-        })
-    } catch (error) {
-      console.error(error)
-      alert("Erro ao processar imagem")
-    }
+
+    processImage(imageParts)
+      .then((json) => {
+        console.log(json)
+        setProcessedAlt(json);
+      })
+      .catch((error) => {
+        console.error(error)
+        if (error instanceof GoogleGenerativeAIError || error instanceof GoogleGenerativeAIResponseError) {
+          alert("Erro ao processar imagem devido a politicas de segurança.")
+        } else {
+          alert("Erro ao processar imagem devido a politicas de segurança.")
+        }
+        setProcessing(false)
+      })
+      .finally(() => {
+        setProcessing(false)
+      })
   }
 
   return (
