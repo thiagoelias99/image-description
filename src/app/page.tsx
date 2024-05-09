@@ -2,9 +2,10 @@
 
 import { ProcessedAlt, processImage } from '@/actions/process-image';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ImageUp, Loader2 } from 'lucide-react';
+import { ImageUp, Loader2, TriangleAlert } from 'lucide-react';
 import Image from 'next/image';
 import { FormEvent, useState } from 'react';
 
@@ -82,8 +83,8 @@ export default function Home() {
                 className={`w-full h-[280px] flex flex-row justify-center items-center border-[1.5px] rounded-xl ${imageURL ? "hidden" : ""}`}
               >
                 <div className='flex flex-col justify-center items-center gap-4'>
-                <ImageUp className="h-20 w-20 stroke-muted stroke-1" />
-                <p className='text-base text-muted'>Toque para enviar uma imagem</p>
+                  <ImageUp className="h-20 w-20 stroke-muted stroke-1" />
+                  <p className='text-base text-muted'>Toque para enviar uma imagem</p>
                 </div>
               </Label>
               <Input
@@ -134,14 +135,22 @@ export default function Home() {
 
                 {processedAlt && (
                   <div className='w-full flex flex-col justify-start items-start gap-4'>
-                    <div>
+                    <Card className='w-full p-4'>
                       <h2 className='w-full text-xl text-foreground font-bold text-justify'>Descrição curta</h2>
                       <p className='w-full text-base text-muted'>{processedAlt.alt}</p>
-                    </div>
-                    <div>
+                    </Card>
+                    <Card className='w-full p-4'>
                       <h2 className='w-full text-xl text-foreground font-bold'>Descrição detalhada</h2>
                       <p className='w-full text-base text-muted text-justify'>{processedAlt.description}</p>
-                    </div>
+                    </Card>
+                    <Card className='w-full p-4 bg-[#f6f3d9]'>
+                      <div className='w-full flex justify-center items-center gap-2'>
+                        <TriangleAlert className='w-6 h-6 text-primary stroke-[#8d703f]' />
+                        <h2 className='text-sm font-semibold text-center text-foreground text-[#8d703f]'>Conteúdo Gerado por Inteligência Artificial</h2>
+                      </div>
+                      <p className='w-full mt-2 text-xs text-muted text-justify text-[#8d703f]'>Este conteúdo foi gerado por um sistema de inteligência artificial (IA) e pode não ser totalmente preciso ou confiável. </p>
+                      <p className='w-full mt-2 text-xs text-muted text-justify text-[#8d703f]'>É importante ser cauteloso ao consumir conteúdo gerado por este tipo de tecnologia.</p>
+                    </Card>
                   </div>
                 )}
               </div>
