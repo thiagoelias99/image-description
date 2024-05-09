@@ -5,7 +5,12 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, FileDataPart } fr
 const MODEL_NAME = "gemini-pro-vision";
 const API_KEY = process.env.AI_STUDIO_API_KEY as string;
 
-export async function processImage(image: FileDataPart) {
+export type ProcessedAlt = {
+  alt: string;
+  description: string;
+};
+
+export async function processImage(image: FileDataPart): Promise<ProcessedAlt> {
   const genAI = new GoogleGenerativeAI(API_KEY);
   const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
@@ -45,8 +50,8 @@ export async function processImage(image: FileDataPart) {
   const start = result.response.text().indexOf("{")
   const end = result.response.text().lastIndexOf("}")
 
-  const json = result.response.text().substring(start, end + 1)
+  const text = result.response.text().substring(start, end + 1)
 
-  return json
+  return JSON.parse(text) as ProcessedAlt
 }
 
