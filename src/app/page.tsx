@@ -52,10 +52,16 @@ export default function Home() {
 
     const imageParts = await fileToGenerativePart(arquivo as Blob)
 
-
     processImage(imageParts)
       .then((json) => {
         console.log(json)
+
+        if (!json.alt || !json.description) {
+          alert(`Erro ao processar imagem: ${JSON.stringify(json)}`)
+          setProcessing(false)
+          return
+        }
+
         setProcessedAlt(json);
       })
       .catch((error) => {
