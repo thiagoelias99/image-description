@@ -4,7 +4,7 @@ import { ProcessedAlt, processImage } from '@/actions/process-image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { ImageUp, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { FormEvent, useState } from 'react';
 
@@ -76,11 +76,16 @@ export default function Home() {
             onSubmit={(e) => handleFormSubmit(e)}
             className='w-full max-w-sm flex flex-col justify-start items-start gap-4'
           >
-            <div className="grid w-full mt-2 max-w-sm items-center gap-1.5">
+            <div className="flex w-full mt-2 max-w-sm justify-center items-center gap-1.5">
               <Label
                 htmlFor="arquivo"
-                className={imageURL ? "hidden" : ""}
-              >Arquivo de imagem</Label>
+                className={`w-full h-[280px] flex flex-row justify-center items-center border-[1.5px] rounded-xl ${imageURL ? "hidden" : ""}`}
+              >
+                <div className='flex flex-col justify-center items-center gap-4'>
+                <ImageUp className="h-20 w-20 stroke-muted stroke-1" />
+                <p className='text-base text-muted'>Toque para enviar uma imagem</p>
+                </div>
+              </Label>
               <Input
                 id="arquivo"
                 name='arquivo'
@@ -93,7 +98,7 @@ export default function Home() {
                     setImageURL(URL.createObjectURL(file));
                   }
                 }}
-                className={imageURL ? "hidden" : ""}
+                className="hidden"
               />
             </div>
 
@@ -102,7 +107,7 @@ export default function Home() {
                 <div className='relative w-full h-[280px]'>
                   <Image
                     src={imageURL}
-                    alt="Picture of the author"
+                    alt="Imagem carregada pelo usuário"
                     className='rounded-lg'
                     fill
                     objectFit='contain'
