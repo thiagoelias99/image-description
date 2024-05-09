@@ -11,6 +11,7 @@ export type ProcessedAlt = {
 };
 
 export async function processImage(image: unknown): Promise<ProcessedAlt> {
+  console.log("Processing image")
   const genAI = new GoogleGenerativeAI(API_KEY);
   const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 

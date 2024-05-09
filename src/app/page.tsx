@@ -15,15 +15,6 @@ async function fileToGenerativePart(file: Blob) {
       return
     }
 
-    if (!file.type.includes("image")) {
-      alert("O arquivo selecionado não é uma imagem");
-      return
-    }
-
-    if (!reader.result) {
-      return
-    }
-
     reader.onloadend = () => resolve((reader!.result! as string).split(",")[1]);
     reader.readAsDataURL(file);
   });
@@ -38,13 +29,13 @@ export default function Home() {
   const [processedAlt, setProcessedAlt] = useState<ProcessedAlt | null>(null);
 
   async function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
-    // async function handleFormSubmit() {
     setProcessing(true)
     event.preventDefault();
 
     const form = document.getElementById("formUpload");
 
     if (!form) {
+      setProcessing(false)
       return;
     }
 
@@ -59,11 +50,17 @@ export default function Home() {
 
     const imageParts = await fileToGenerativePart(arquivo as Blob)
 
-    processImage(imageParts)
-      .then((json) => {
-        setProcessedAlt(json);
-        setProcessing(false)
-      })
+    try {
+      processImage(imageParts)
+        .then((json) => {
+          console.log(json)
+          setProcessedAlt(json);
+          setProcessing(false)
+        })
+    } catch (error) {
+      console.error(error)
+      alert("Erro ao processar imagem")
+    }
   }
 
   return (
