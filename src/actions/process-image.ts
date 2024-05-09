@@ -10,7 +10,7 @@ export type ProcessedAlt = {
   description: string;
 };
 
-export async function processImage(image: FileDataPart): Promise<ProcessedAlt> {
+export async function processImage(image: unknown): Promise<ProcessedAlt> {
   const genAI = new GoogleGenerativeAI(API_KEY);
   const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
@@ -45,7 +45,7 @@ export async function processImage(image: FileDataPart): Promise<ProcessedAlt> {
     },
   ];
 
-  const result = await model.generateContent([image, prompt])
+  const result = await model.generateContent([image as FileDataPart, prompt])
 
   const start = result.response.text().indexOf("{")
   const end = result.response.text().lastIndexOf("}")

@@ -6,12 +6,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 
-async function fileToGenerativePart(file) {
+async function fileToGenerativePart(file: Blob) {
   const base64EncodedDataPromise = new Promise((resolve) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result.split(",")[1]);
+    if (!file) {
+      return
+    }
+
+    if (!file.type.includes("image")) {
+      alert("O arquivo selecionado não é uma imagem");
+      return
+    }
+
+    if (!reader.result) {
+      return
+    }
+
+    reader.onloadend = () => resolve((reader!.result! as string).split(",")[1]);
     reader.readAsDataURL(file);
   });
   return {
@@ -24,13 +37,18 @@ export default function Home() {
   const [processing, setProcessing] = useState<boolean>(false);
   const [processedAlt, setProcessedAlt] = useState<ProcessedAlt | null>(null);
 
-  async function handleFormSubmit(event: Event) {
+  async function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
     // async function handleFormSubmit() {
     setProcessing(true)
     event.preventDefault();
 
     const form = document.getElementById("formUpload");
-    const formData = new FormData(form);
+
+    if (!form) {
+      return;
+    }
+
+    const formData = new FormData(form as HTMLFormElement);
 
     const arquivo = formData.get("arquivo");
 
@@ -39,11 +57,9 @@ export default function Home() {
       return;
     }
 
-    // setImageURL(URL.createObjectURL(arquivo as Blob))
+    const imageParts = await fileToGenerativePart(arquivo as Blob)
 
-    const imageParts = await fileToGenerativePart(arquivo)
-
-    processImage(imageParts as FileDataPart)
+    processImage(imageParts)
       .then((json) => {
         setProcessedAlt(json);
         setProcessing(false)
@@ -60,7 +76,7 @@ export default function Home() {
         <div className='w-full max-w-sm flex flex-col justify-start items-start gap-4'>
           <form
             id="formUpload"
-            onSubmit={handleFormSubmit}
+            onSubmit={(e) => handleFormSubmit(e)}
             className='w-full max-w-sm flex flex-col justify-start items-start gap-4'
           >
             <div className="grid w-full mt-2 max-w-sm items-center gap-1.5">
@@ -75,7 +91,7 @@ export default function Home() {
                 accept="image/*"
                 required
                 onChange={(event) => {
-                  const file = (event.target as HTMLInputElement).files[0];
+                  const file = (event.target as HTMLInputElement)!.files![0];
                   if (file) {
                     setImageURL(URL.createObjectURL(file));
                   }
