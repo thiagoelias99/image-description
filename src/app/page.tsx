@@ -6,24 +6,9 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { GoogleGenerativeAIError, GoogleGenerativeAIResponseError } from '@google/generative-ai';
-import { ImageUp, Loader2, TriangleAlert } from 'lucide-react';
+import { GitBranchPlus, Github, ImageUp, Linkedin, Loader2, Mail, TriangleAlert } from 'lucide-react';
 import Image from 'next/image';
 import { FormEvent, useState } from 'react';
-
-async function fileToGenerativePart(file: Blob) {
-  const base64EncodedDataPromise = new Promise((resolve) => {
-    const reader = new FileReader();
-    if (!file) {
-      return
-    }
-
-    reader.onloadend = () => resolve((reader!.result! as string).split(",")[1]);
-    reader.readAsDataURL(file);
-  });
-  return {
-    inlineData: { data: await base64EncodedDataPromise, mimeType: file.type },
-  };
-}
 
 export default function Home() {
   const [imageURL, setImageURL] = useState<string | null>(null);
@@ -31,31 +16,18 @@ export default function Home() {
   const [processedAlt, setProcessedAlt] = useState<ProcessedAlt | null>(null);
 
   async function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
-    setProcessing(true)
     event.preventDefault();
+    setProcessing(true)
 
     const form = document.getElementById("formUpload");
-
-    if (!form) {
-      setProcessing(false)
-      return;
-    }
-
     const formData = new FormData(form as HTMLFormElement);
+    const imageFile = formData.get("imageFile");
 
-    const arquivo = formData.get("arquivo");
-
-    if (!imageURL) {
-      alert("Selecione um arquivo de imagem");
-      return;
-    }
-
-    const imageParts = await fileToGenerativePart(arquivo as Blob)
+    // Image Parts is a required format for the Google Generative AI API
+    const imageParts = await fileToGenerativePart(imageFile as Blob)
 
     processImage(imageParts)
       .then((json) => {
-        console.log(json)
-
         if (!json.alt || !json.description) {
           alert(`Erro ao processar imagem: ${JSON.stringify(json)}`)
           setProcessing(false)
@@ -66,10 +38,15 @@ export default function Home() {
       })
       .catch((error) => {
         console.error(error)
+
         if (error instanceof GoogleGenerativeAIError || error instanceof GoogleGenerativeAIResponseError) {
-          alert("Erro ao processar imagem devido a politicas de segurança.")
-        } else {
-          alert("Erro ao processar imagem devido a politicas de segurança.")
+          alert("Erro ao processar imagem devido a politicas de conteúdo.")
+        } else if (error instanceof Error) {
+          if (error.message.includes("Response was blocked due to")) {
+            alert("Erro ao processar imagem devido a politicas de conteúdo.")
+          } else {
+            alert("Erro ao processar imagem. Tente novamente mais tarde.")
+          }
         }
         setProcessing(false)
       })
@@ -81,20 +58,19 @@ export default function Home() {
   return (
     <main className='w-full h-full px-4 py-8 flex flex-col justify-start items-start gap-4'>
       <h1 className='w-full text-3xl text-foreground font-bold text-center'> Imagem para Texto</h1>
-      <span className='w-full text-base text-muted text-center'>Envie uma imagem para gerar uma descrição alternativa dela</span>
-
-      {/* {!imageURL && ( */}
+      <span className='w-full text-base text-muted text-center'>Envie uma imagem para gerar descrições alternativas dela</span>
       {true && (
-        <div className='w-full max-w-sm flex flex-col justify-start items-start gap-4'>
+        <div className='w-full flex flex-col justify-center items-center gap-4'>
           <form
             id="formUpload"
             onSubmit={(e) => handleFormSubmit(e)}
-            className='w-full max-w-sm flex flex-col justify-start items-start gap-4'
+            className='w-full flex flex-col justify-start items-start gap-4 sm:flex-row sm:justify-center sm:items-center'
           >
-            <div className="flex w-full mt-2 max-w-sm justify-center items-center gap-1.5">
+            {/* Image Input */}
+            <div className="flex w-full mt-2 justify-center items-center gap-1.5">
               <Label
-                htmlFor="arquivo"
-                className={`w-full h-[280px] flex flex-row justify-center items-center border-[1.5px] rounded-xl ${imageURL ? "hidden" : ""}`}
+                htmlFor="imageFile"
+                className={`w-full h-[280px] flex flex-row justify-center items-center border-[1.5px] rounded-xl cursor-pointer ${imageURL ? "hidden" : ""}`}
               >
                 <div className='flex flex-col justify-center items-center gap-4'>
                   <ImageUp className="h-20 w-20 stroke-muted stroke-1" />
@@ -102,8 +78,8 @@ export default function Home() {
                 </div>
               </Label>
               <Input
-                id="arquivo"
-                name='arquivo'
+                id="imageFile"
+                name='imageFile'
                 type="file"
                 accept="image/*"
                 required
@@ -115,23 +91,25 @@ export default function Home() {
                 }}
                 className="hidden"
               />
+
+              <div className={`relative rounded-lg w-full h-[280px] sm:h-[480px] row-span-4 ${imageURL ? "" : "hidden"}`}>
+                <Image
+                  src={imageURL || ''}
+                  alt="Imagem carregada pelo usuário"
+                  className={`object-scale-down rounded-lg ${imageURL ? "" : "hidden"}`}
+                  fill
+                />
+              </div>
             </div>
 
             {imageURL && (
-              <div className='w-full flex flex-col justify-start items-start gap-4'>
-                <div className='relative w-full h-[280px]'>
-                  <Image
-                    src={imageURL}
-                    alt="Imagem carregada pelo usuário"
-                    className='rounded-lg'
-                    fill
-                    objectFit='contain'
-                  />
-                </div>
+              <div className={`w-full h-full flex flex-col justify-start items-start gap-4 ${imageURL ? "" : "hidden"}`}>
 
+                {/* Submit Button */}
                 <Button
                   className={`w-full ${!imageURL || processedAlt || processing ? "hidden" : ""}`} type="submit">Analisar</Button>
 
+                {/* Restart Button */}
                 <Button
                   className={`w-full`}
                   onClick={() => {
@@ -147,6 +125,7 @@ export default function Home() {
                   </div>
                 )}
 
+                {/* Image transcriptions */}
                 {processedAlt && (
                   <div className='w-full flex flex-col justify-start items-start gap-4'>
                     <Card className='w-full p-4'>
@@ -157,6 +136,8 @@ export default function Home() {
                       <h2 className='w-full text-xl text-foreground font-bold'>Descrição detalhada</h2>
                       <p className='w-full text-base text-muted text-justify'>{processedAlt.description}</p>
                     </Card>
+
+                    {/* Ai Alert */}
                     <Card className='w-full p-4 bg-[#f6f3d9]'>
                       <div className='w-full flex justify-center items-center gap-2'>
                         <TriangleAlert className='w-6 h-6 text-primary stroke-[#8d703f]' />
@@ -173,8 +154,30 @@ export default function Home() {
         </div>
       )}
 
-      <p className='w-full mt-8 text-base text-muted text-center'>Desenvolvido por <a href="https://github.com/thiagoelias99" className="text-primary font-bold">Thiago Elias</a>
+      <p className='w-full mt-8 text-base text-muted text-center'>Desenvolvido por <span className="text-primary text-lg font-bold">Thiago Elias</span>
       </p>
+      <nav className='w-full'>
+        <ul className='w-full flex justify-center items-center gap-2'>
+          <li className='cursor-pointer'><a target='blank' href='mailto:thiagoelias99@gmail.com' className='w-8 h-8 rounded-full flex justify-center items-center'><Mail className='w-6 h-6 stroke-red-600' /></a></li>
+          <li className='cursor-pointer'><a target='blank' href='https://github.com/thiagoelias99' className='w-8 h-8 rounded-full flex justify-center items-center'><Github className='w-6 h-6' /></a></li>
+          <li className='cursor-pointer'><a target='blank' href='https://www.linkedin.com/in/eng-thiagoelias/' className='w-8 h-8 bg-[#4066bb] rounded flex justify-center items-center'><Linkedin className='w-6 h-6 stroke-1  stroke-white fill-white' /></a></li>
+        </ul>
+      </nav>
     </main>
   );
+}
+
+async function fileToGenerativePart(file: Blob) {
+  const base64EncodedDataPromise = new Promise((resolve) => {
+    const reader = new FileReader();
+    if (!file) {
+      return
+    }
+
+    reader.onloadend = () => resolve((reader!.result! as string).split(",")[1]);
+    reader.readAsDataURL(file);
+  });
+  return {
+    inlineData: { data: await base64EncodedDataPromise, mimeType: file.type },
+  };
 }
