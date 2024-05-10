@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">Texto a partir de Imagem</h1> 
 
-## Getting Started
+<p align="center">
+<a href="https://nextjs.org/">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" />
+</a>
+<a href="https://www.typescriptlang.org">
+<img src="https://img.shields.io/badge/TypeScript-000?style=for-the-badge&logo=typescript" />
+</a>
+<a href="https://aistudio.google.com/app/">
+<img src="https://img.shields.io/badge/Google%20AI-000?style=for-the-badge&logo=google" />
+</a>
+<a href="https://gemini.google.com/app">
+<img src="https://img.shields.io/badge/Gemini-000?style=for-the-badge&logo=google" />
+</a>
+</p>
 
-First, run the development server:
+ ## **Motivação do projeto**
+ - ***Auxilio em desenvolvimento de aplicações*** front-end e mobile, onde é necessário adicionar uma descrição textual das imagens (*alt*) para ajudar na acessibilidade.
+ - Já encontrei muitos casos onde ***essa descrição é mal feita e até ignorada***.
+ - Criar uma forma de gerar essa descrição, ***facilitando o trabalho*** do desenvolvedor.
 
+ ## **Descrição do projeto**
+ - Projeto desenvolvido com o objetivo de gerar textos descritivos a partir de imagens
+ - Gera duas descrição, uma mais direta e outra mais detalhada.
+ - Utiliza inteligencia artificial [***Google Gemini***](https://gemini.google.com/app) para transcrição da imagem.
+ - Possui interface simple e direta, priorizando o uso em disposivos móveis.
+ - Desenvolvida utilizando framework [***Next.Js***](https://nextjs.org/) com linguagem [***Typescript***](https://www.typescriptlang.org/).
+
+ ## **Deploy da aplicação**
+[Link da Aplicação Web](https://image-description-seven.vercel.app/)
+<p align="center">
+<img src="./utils/screens.png" width="720px"/>
+</p>
+
+## **Instalação do Projeto**
+### **Projeto desenvolvido com Next.js versão 14+.**
+
+### **Requerimentos**
+- Instalação do [***Node.js v20+***](https://nodejs.org/en) no computador.
+- **API_KEY** para acesso ao [***Google AI Studio***](https://aistudio.google.com/app/)
+
+### **Instalação das dependências**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### **Configuração das variáveis de ambiente**
+- Renomear o arquivo ***env.example*** para ***env.local*** e preencher a informação da API_KEY gerada no [***Google AI Studio***](https://aistudio.google.com/app/).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### **Executar em modo de desenvolvimento**
+```bash
+npm run dev 
+```
