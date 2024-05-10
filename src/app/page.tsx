@@ -40,10 +40,10 @@ export default function Home() {
         console.error(error)
 
         if (error instanceof GoogleGenerativeAIError || error instanceof GoogleGenerativeAIResponseError) {
-          alert("Erro ao processar imagem devido a politicas de conteúdo.")
+          alert("Bloqueio ao processar imagem devido a politicas de conteúdo.")
         } else if (error instanceof Error) {
-          if (error.message.includes("Response was blocked due to")) {
-            alert("Erro ao processar imagem devido a politicas de conteúdo.")
+          if (error.message.includes("was blocked due to")) {
+            alert("Bloqueio ao processar imagem devido a politicas de conteúdo.")
           } else {
             alert("Erro ao processar imagem. Tente novamente mais tarde.")
           }

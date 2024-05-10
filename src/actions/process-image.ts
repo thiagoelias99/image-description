@@ -12,8 +12,6 @@ export type ProcessedAlt = {
 
 export async function processImage(image: unknown): Promise<ProcessedAlt> {
   const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
   const prompt = `a partir desta imagem, preciso que retorne o JSON com dois campos.
 
   alt -> Uma descrição com poucas palavras (até 20) da imagem
@@ -29,23 +27,28 @@ export async function processImage(image: unknown): Promise<ProcessedAlt> {
   const safetySettings = [
     {
       category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
     },
     {
       category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
     },
     {
       category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
     },
     {
       category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    },
+      threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+    }
   ];
 
-  // try {
+  const model = genAI.getGenerativeModel({
+    model: MODEL_NAME,
+    generationConfig,
+    safetySettings
+  });
+
   const result = await model.generateContent([image as FileDataPart, prompt])
   const start = result.response.text().indexOf("{")
   const end = result.response.text().lastIndexOf("}")
