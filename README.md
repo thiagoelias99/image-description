@@ -22,7 +22,7 @@
 
  ## **Descrição do projeto**
  - Projeto desenvolvido com o objetivo de gerar textos descritivos a partir de imagens
- - Gera duas descrição, uma mais direta e outra mais detalhada.
+ - Gera duas descrições, uma mais direta e outra mais detalhada.
  - Utiliza inteligencia artificial [***Google Gemini***](https://gemini.google.com/app) para transcrição da imagem.
  - Possui interface simple e direta, priorizando o uso em disposivos móveis.
  - Desenvolvida utilizando framework [***Next.Js***](https://nextjs.org/) com linguagem [***Typescript***](https://www.typescriptlang.org/).
