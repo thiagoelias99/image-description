@@ -56,15 +56,15 @@ export default function Home() {
   }
 
   return (
-    <main className='w-full h-full px-4 py-8 flex flex-col justify-start items-start gap-4'>
+    <main className='w-full h-full mx-auto px-4 py-8 flex flex-col justify-start items-start gap-4'>
       <h1 className='w-full text-3xl text-foreground font-bold text-center'> Imagem para Texto</h1>
       <span className='w-full text-base text-muted text-center'>Envie uma imagem para gerar descrições alternativas dela</span>
       {true && (
-        <div className='w-full flex flex-col justify-center items-center gap-4'>
+        <div className='w-full sm:max-w-[560px] mx-auto flex flex-col justify-center items-center gap-4'>
           <form
             id="formUpload"
             onSubmit={(e) => handleFormSubmit(e)}
-            className='w-full flex flex-col justify-start items-start gap-4 sm:flex-row sm:justify-center sm:items-center'
+            className='w-full flex flex-col justify-start items-start gap-4'
           >
             {/* Image Input */}
             <div className="flex w-full mt-2 justify-center items-center gap-1.5">
@@ -92,11 +92,11 @@ export default function Home() {
                 className="hidden"
               />
 
-              <div className={`relative rounded-lg w-full h-[280px] sm:h-[480px] row-span-4 ${imageURL ? "" : "hidden"}`}>
+              <div className={`relative rounded-lg w-full h-[280px] row-span-4 ${imageURL ? "" : "hidden"} rounded-lg`}>
                 <Image
                   src={imageURL || ''}
                   alt="Imagem carregada pelo usuário"
-                  className={`object-scale-down rounded-lg ${imageURL ? "" : "hidden"}`}
+                  className={`object-scale-down rounded-lg ${imageURL ? "" : "hidden"} rounded-lg`}
                   fill
                 />
               </div>
