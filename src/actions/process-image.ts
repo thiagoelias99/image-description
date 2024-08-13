@@ -1,8 +1,8 @@
 "use server"
 
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, FileDataPart, GoogleGenerativeAIResponseError } from "@google/generative-ai"
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, FileDataPart } from "@google/generative-ai"
 
-const MODEL_NAME = "gemini-pro-vision";
+const MODEL_NAME = process.env.MODEL_NAME as string;
 const API_KEY = process.env.AI_STUDIO_API_KEY as string;
 
 export type ProcessedAlt = {
